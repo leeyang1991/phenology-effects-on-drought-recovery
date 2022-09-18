@@ -11,3 +11,5 @@ pandas
 sklearn
 semopy
 ```
+
+Thanks the Github Copilot for auto completion in the code and comments. :P
