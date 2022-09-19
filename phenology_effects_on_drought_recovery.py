@@ -157,17 +157,17 @@ class Phenology:
         '''
         pass
 
-    def hants_smooth(self,vals_bi_week):
+    def hants_smooth(self,NDVI_bi_week):
         '''
-        :param vals_bi_week: bi-weekly NDVI values
+        :param NDVI_bi_week: bi-weekly NDVI values
         :return: 365-day NDVI time series
         '''
-        vals = np.array(vals_bi_week)
-        std = np.nanstd(vals)
+        NDVI_bi_week = np.array(NDVI_bi_week)
+        std = np.nanstd(NDVI_bi_week)
         std = float(std)
         if std == 0:
             return None
-        xnew, ynew = self.__interp(vals)
+        xnew, ynew = self.__interp(NDVI_bi_week)
         ynew = np.array([ynew])
         results = HANTS().hants(sample_count=365, inputs=ynew, low=-10000, high=10000,
                         fit_error_tolerance=std)
@@ -175,25 +175,25 @@ class Phenology:
 
         return result
 
-    def pick_early_peak_late_dormant_period(self,vals,threshold=0.3):
+    def pick_early_peak_late_dormant_period(self,NDVI_daily,threshold=0.3):
         '''
-        :param vals: 365-day NDVI time series
+        :param NDVI_daily: 365-day NDVI time series
         :param threshold: SOS and EOS threshold of minimum NDVI plus the 30% of the seasonal amplitude for multiyear NDVI
         :return: details of phenology
         '''
-        peak = np.argmax(vals)
-        if peak == 0 or peak == (len(vals)-1):
+        peak = np.argmax(NDVI_daily)
+        if peak == 0 or peak == (len(NDVI_daily)-1):
             raise
         try:
-            early_start = self.__search_SOS(vals, peak, threshold)
-            late_end = self.__search_EOS(vals, peak, threshold)
+            early_start = self.__search_SOS(NDVI_daily, peak, threshold)
+            late_end = self.__search_EOS(NDVI_daily, peak, threshold)
         except:
             early_start = np.nan
             late_end = np.nan
         # method 1
         # early_end, late_start = self.__slope_early_late(vals,early_start,late_end,peak) # unstable
         # method 2
-        early_end, late_start = self.__median_early_late(vals,early_start,late_end,peak) # choose the median value before and after the peak
+        early_end, late_start = self.__median_early_late(NDVI_daily,early_start,late_end,peak) # choose the median value before and after the peak
 
         early_length = early_end - early_start
         mid_length = late_start - early_end
@@ -386,7 +386,7 @@ class Single_Drought_Events:
         '''
         events_with_timing = []
         for event in drought_events:
-            min_indx = self.__pick_min_indx(SPEI,event) # pick the minimum SPEI value in the drought event
+            min_indx = self.__pick_min_indx(SPEI,event) # pick the index of minimum SPEI value in the drought event
             year_index = min_indx // 12
             mon = min_indx % 12 + 1 # index to month
             early_start, early_end, late_start, late_end = phenology_list[year_index]
@@ -445,7 +445,7 @@ class Single_Drought_Events:
         return min_index
 
 
-class Recovery_time:
+class Recovery_Time:
 
     def __init__(self):
         '''
@@ -464,7 +464,7 @@ class Recovery_time:
         '''
         recovery_time_result = []
         for timing,event_index in single_events_with_timing:
-            event_start_index = self.__pick_min_indx(SPEI,event_index) # pick the month of minimum SPEI value in the drought event as the start of the drought event
+            event_start_index = self.__pick_min_indx(SPEI,event_index) # pick the index of minimum SPEI value in the drought event as the start of the drought event
             year_indx = event_start_index // 12 # the year of the drought event
             early_start, early_end, late_start, late_end = phenology_list[year_indx] # phenology of the drought year
             growing_season = list(range(early_start, late_end + 1)) # growing season of the drought year
@@ -534,9 +534,9 @@ class Recovery_time:
             return None, None
         return recovery_range, recovery_mode
 
-    def __information_on_the_drought_process(self, ndvi, event_start_index, growing_season, lc_type):
+    def __information_on_the_drought_process(self, NDVI, event_start_index, growing_season, lc_type):
         '''
-        :param ndvi: NDVI time series
+        :param NDVI: NDVI time series
         :param event_start_index: the month of minimum SPEI value in the drought event as the start of the drought event
         :param growing_season: growing season of the drought year
         :param lc_type: landcover type, Deciduous, Evergreen, Shrubland, Grassland from GLC2000
@@ -550,7 +550,7 @@ class Recovery_time:
         picked_ndvi_index = []
         picked_ndvi_index_i = []
         for i in range(36): # Search for information only 3 years after the drought happened
-            if (event_start_index + i) >= len(ndvi):  # if the drought event happened in the last year of the time series, then stop searching
+            if (event_start_index + i) >= len(NDVI):  # if the drought event happened in the last year of the time series, then stop searching
                 break
             search_ = event_start_index + i
             search_mon = search_ % 12 + 1
@@ -562,7 +562,7 @@ class Recovery_time:
                 picked_ndvi_vals_i = []
                 picked_ndvi_index_i = []
             else:
-                ndvi_i = ndvi[search_]
+                ndvi_i = NDVI[search_]
                 picked_ndvi_vals_i.append(ndvi_i)
                 picked_ndvi_index_i.append(search_)
         if len(picked_ndvi_vals) == 0: # if no growing season after the drought event, then return None
@@ -693,7 +693,7 @@ class Partial_Dependence_Plots:
         '''
         pass
 
-    def partial_dependent_plot_arr(self,df,x_vars,y_var):
+    def partial_dependence_plots(self,df,x_vars,y_var):
         '''
         :param df: a dataframe
         :param x_vars: a list of x variables
