@@ -1,7 +1,9 @@
 ## phenology effects on drought recovery
 
 This repository contains key algorithms of Li et al.,(2022)
-_**Widespread vegetation phenology effects on drought recovery of Northern Hemisphere ecosystems**_. (in review)
+_**Widespread vegetation phenology effects on drought recovery of Northern Hemisphere ecosystems**_. 
+
+(Accepted by Nature Climate Change, in press)
 
 required packages for this script:
 ```
