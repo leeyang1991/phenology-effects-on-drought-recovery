@@ -2,7 +2,7 @@
 '''
 Author: Yang Li
 Description: This script contains the key algorithms for the paper of Li et al. (2023)
-            "Widespread vegetation phenology effects on drought recovery of Northern Hemisphere ecosystems"
+            "Widespread spring phenology effects on drought recovery of Northern Hemisphere ecosystems"
 '''
 import datetime
 import numpy as np
