@@ -578,13 +578,13 @@ class Recovery_Time:
             recovery_start = picked_ndvi_index[0][min_indx]
             lag = recovery_start - event_start_index
             recovery_range, recovery_mode = \
-                self.__search_for_recovery_time(recovery_start,event_start_index,growing_season,ndvi,ndvi_threshold,lc_type)
+                self.__search_for_recovery_time(recovery_start,event_start_index,growing_season,NDVI,ndvi_threshold,lc_type)
             recovery_start_gs = 'first'
 
         elif second_gs_min_ndvi < ndvi_threshold: # drought recovery happend in the second growing season after the drought event
             recovery_start = picked_ndvi_index[1][0]
             recovery_range, recovery_mode = \
-                self.__search_for_recovery_time(recovery_start, event_start_index, growing_season, ndvi, ndvi_threshold,lc_type)
+                self.__search_for_recovery_time(recovery_start, event_start_index, growing_season, NDVI, ndvi_threshold,lc_type)
             lag = recovery_start - event_start_index
             recovery_start_gs = 'second'
         else:
